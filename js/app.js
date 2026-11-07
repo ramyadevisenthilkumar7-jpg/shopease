@@ -27,12 +27,16 @@ const products = [
     }
 ];
 
-// Get HTML Elements
+// Get Cart from Local Storage
+
+function getCart() {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+// Display Products
 
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById("search");
-
-// Display Products
 
 function displayProducts(productItems = products) {
 
@@ -70,7 +74,7 @@ if (searchInput) {
 
     searchInput.addEventListener("input", function() {
 
-        const searchValue = searchInput.value.trim().toLowerCase();
+        const searchValue = searchInput.value.toLowerCase().trim();
 
         const filteredProducts = products.filter(product =>
             product.name.toLowerCase().includes(searchValue)
@@ -80,11 +84,11 @@ if (searchInput) {
     });
 }
 
-// Add Products to Cart
+// Add to Cart
 
 function addToCart(id) {
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = getCart();
 
     cart.push(id);
 
@@ -102,46 +106,52 @@ function displayCart() {
 
     if (!cartItems || !cartTotal) return;
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cart = getCart();
 
     cartItems.innerHTML = "";
 
     let total = 0;
 
     if (cart.length === 0) {
+
         cartItems.innerHTML = "<p>Your cart is empty!</p>";
         cartTotal.innerHTML = "Total: ₹0";
+
         return;
     }
 
     cart.forEach((id, index) => {
 
-        const product = products.find(item => item.id === id);
+        const product = products.find(item => item.id === Number(id));
 
         if (product) {
 
             total += product.price;
 
-            cartItems.innerHTML += `
-                <div class="product-card">
-                    <h3>${product.name}</h3>
-                    <p>Price: ₹${product.price}</p>
-                    <button onclick="removeFromCart(${index})">
-                        Remove
-                    </button>
-                </div>
+            const card = document.createElement("div");
+
+            card.className = "product-card";
+
+            card.innerHTML = `
+                <h3>${product.name}</h3>
+                <p>Price: ₹${product.price}</p>
+                <button onclick="removeFromCart(${index})">
+                    Remove
+                </button>
             `;
+
+            cartItems.appendChild(card);
         }
     });
 
     cartTotal.innerHTML = "Total: ₹" + total;
 }
 
-// Remove Product from Cart
+// Remove Product
 
 function removeFromCart(index) {
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = getCart();
 
     cart.splice(index, 1);
 
@@ -153,6 +163,25 @@ function removeFromCart(index) {
 // Clear Cart
 
 function clearCart() {
+
+    localStorage.removeItem("cart");
+
+    displayCart();
+}
+
+// Checkout
+
+function checkout() {
+
+    let cart = getCart();
+
+    if (cart.length === 0) {
+
+        alert("Your cart is empty!");
+        return;
+    }
+
+    alert("Order placed successfully! Thank you for shopping.");
 
     localStorage.removeItem("cart");
 
