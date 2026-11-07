@@ -194,3 +194,27 @@ footer {
         padding: 30px 15px;
     }
 }
+/* Cart Page */
+
+#cart-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1000px;
+    margin: 30px auto;
+}
+
+#cart-total {
+    margin: 25px;
+    color: #17365d;
+}
+
+.products button {
+    background-color: #17365d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+}
